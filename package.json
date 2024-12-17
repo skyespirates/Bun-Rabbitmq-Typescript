@@ -12,6 +12,7 @@
     "@hono/node-server": "^1.13.7",
     "@logtail/node": "^0.5.2",
     "@logtail/winston": "^0.5.2",
+    "@types/amqplib": "^0.10.6",
     "@types/bun": "^1.1.14",
     "@types/node-schedule": "^2.1.7",
     "amqplib": "^0.10.5",
