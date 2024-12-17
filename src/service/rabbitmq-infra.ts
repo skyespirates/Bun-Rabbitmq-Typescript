@@ -1,11 +1,12 @@
 import { config } from 'dotenv';
-config({ path: '../.env' });
+config({ path: '../../.env' });
 import amqp from 'amqplib';
 import { handleError } from '../helper';
 
 type MessagePayload = Record<string, unknown>;
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
+console.log(`RABBITMQ_URL: ${RABBITMQ_URL}`);
 if (!RABBITMQ_URL) {
     throw new Error("Environment variable RABBITMQ_URL is not set.");
 }
