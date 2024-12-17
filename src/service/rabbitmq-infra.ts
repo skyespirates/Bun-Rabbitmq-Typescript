@@ -1,12 +1,11 @@
 import { config } from 'dotenv';
 config({ path: '../../.env' });
 import amqp from 'amqplib';
-import { handleError } from '../helper';
+import { handleError, Logger } from '../helper';
 
 type MessagePayload = Record<string, unknown>;
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL;
-console.log(`RABBITMQ_URL: ${RABBITMQ_URL}`);
 if (!RABBITMQ_URL) {
     throw new Error("Environment variable RABBITMQ_URL is not set.");
 }
@@ -19,8 +18,7 @@ export const connectRabbitMQ = async (qName: string): Promise<amqp.Channel> => {
         const channel = await connection.createChannel();
 
         await channel.assertExchange('myapp-rabbitmq', 'direct', { durable: true });
-
-        console.log(`Connected to RabbitMQ and listening on queue: ${qName}`);
+        Logger.info(`Connected to RabbitMQ and listening on queue: ${qName}`);
         return channel;
     } catch (error) {
         handleError('RabbitMQ Connection', error);
