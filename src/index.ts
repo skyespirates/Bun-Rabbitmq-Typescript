@@ -1,34 +1,54 @@
+import { config } from 'dotenv';
 import { Hono } from 'hono';
+import { Logger } from './helper';
 import { listeningQueue } from './listener';
 import { handleCreateUser } from './listener/create-user';
-import { handleError } from './helper/eror-handling';
-import schedule from 'node-schedule';
-import { Logger } from './helper/logger';
-import { serverless } from './helper/request';
+import { VercelRequest, VercelResponse } from '@vercel/node';
+
+config();
 
 const app = new Hono();
-const port = 8989;
 
-schedule.scheduleJob('*/3 * * * *', async () => {
+// Fungsi utama scheduler
+async function runScheduledTask() {
   try {
-    Logger.info('Starting listener...');
+    Logger.info('Starting scheduled task...');
+
+    // Jalankan listener queue
     await listeningQueue('USER_REGISTRATION', handleCreateUser);
-    Logger.info('Listener started successfully.');
+
+    Logger.info('Scheduled task completed successfully.');
+    return { message: 'Scheduler Service task executed' };
   } catch (error) {
-    handleError('Start Listener', error);
+    Logger.error('Failed to run scheduled task', error);
+    throw error;
+  }
+}
+
+// Route untuk manual trigger
+app.get('/', async (c) => {
+  try {
+    const result = await runScheduledTask();
+    return c.json(result);
+  } catch (error) {
+    return c.json({ error: 'Failed to run scheduler' }, 500);
   }
 });
 
-// Routes
-app.get('/', (c) => {
-  return c.json({ message: 'Cron job is running every 3 minutes.' });
-});
-app.notFound((c) => c.text('Route not found', 404));
-
-const server = serverless(app);
-
-server.listen(port, () => {
-  Logger.info(`[Hono-Service] Server is running on port ${port}`);
-});
-
-app.fire();
+// Export handler untuk Vercel API Routes
+export default async function handler(
+  req: VercelRequest, 
+  res: VercelResponse
+) {
+  if (req.method === 'GET') {
+    try {
+      const result = await runScheduledTask();
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to run scheduler' });
+    }
+  } else {
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}

@@ -1,4 +1,4 @@
-import { Logger } from "../helper/logger";
+import { Logger } from "../helper";
 
 type MessagePayload = Record<string, unknown>;
 
