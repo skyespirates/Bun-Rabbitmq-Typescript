@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "crons": [
+    {
+      "path": "/src/crobjob.ts",
+      "schedule": "0 12 * * *"
+    }
+  ],
+  "builds": [
+    {
+      "src": "src/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/index.ts"
+    }
+  ]
+}

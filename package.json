@@ -2,6 +2,12 @@
   "name": "bun-rabbitmq",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "start": "bun run ./dist/index.ts",
+    "dev": "bun --watch ./src/index.ts",
+    "build": "bun build ./src/index.ts --outdir ./dist --target bun",
+    "deploy": "vercel --prod"
+  },
   "devDependencies": {
     "@types/amqplib": "^0.10.6",
     "@types/bun": "latest",
@@ -13,6 +19,7 @@
   "dependencies": {
     "@logtail/node": "^0.5.2",
     "@logtail/winston": "^0.5.2",
+    "@vercel/node": "^5.0.0",
     "amqplib": "^0.10.5",
     "dotenv": "^16.4.7",
     "hono": "^4.6.13",
