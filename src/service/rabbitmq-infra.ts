@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 config({ path: '../.env' });
 import amqp from 'amqplib';
-import { handleError } from "../helper/eror-handling";
+import { handleError } from '../helper';
 
 type MessagePayload = Record<string, unknown>;
 

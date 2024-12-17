@@ -1,4 +1,5 @@
-import { handleError } from "../helper/eror-handling";
+
+import { handleError } from "../helper";
 import { connectRabbitMQ, processMessage } from "../service/rabbitmq-infra";
 
 type MessagePayload = Record<string, unknown>;
